@@ -985,7 +985,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                     }
                 }
             }
-            //printf("class_id = %d, point = %d, cur_recall = %.4f, cur_precision = %.4f \n", i, point, cur_recall, cur_precision);
+            printf("class_id = %d, point = %d, cur_recall = %.4f, cur_precision = %.4f \n", i, point, cur_recall, cur_precision);
 
             avg_precision += cur_precision;
         }

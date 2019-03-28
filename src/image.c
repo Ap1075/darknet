@@ -255,8 +255,9 @@ void draw_bbox(image a, box bbox, int w, float r, float g, float b)
 
     int i;
     for(i = 0; i < w; ++i){
-        draw_box(a, left+i, top+i, right-i, bot-i, r, g, b);
-    }
+       if(i+1 == w){ draw_box(a, left+i, top+i, right-i, bot-i, r, g, b);}
+  }  
+//    draw_box(a, left, top, right, bot, r, g, b);
 }
 
 image **load_alphabet()
@@ -530,6 +531,11 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
     if (!show_img) return;
     static int frame_id = 0;
     frame_id++;
+    int plhy =10000, plhx = 10000;
+    int plly = 0, pllx = 0;
+    CvPoint mypt1, mypt2, mypt3, mypt4;
+    int mywidth, mylwidth;
+    CvScalar mycolor;
 
     for (i = 0; i < num; ++i) {
         char labelstr[4096] = { 0 };
@@ -603,10 +609,25 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
             pt_text_bg1.y = top - (10 + 25 * font_size);
             pt_text_bg2.x = right;
             pt_text_bg2.y = top;
+            if(top<plhy && left<plhx ) {plhy=top;
+                        plhx=left; 
+                        mypt1.x=pt1.x;
+                        mypt1.y=pt1.y;
+                        mypt2.x=pt2.x;
+                        mypt2.y=pt2.y;
+                        mywidth=width;}
+            if(bot>plly && right>pllx ) {plly=bot;
+                        pllx=right; 
+                        mypt3.x=pt1.x;
+                        mypt3.y=pt1.y;
+                        mypt4.x=pt2.x;
+                        mypt4.y=pt2.y;
+                        mylwidth=width;}
             CvScalar color;
             color.val[0] = red * 256;
             color.val[1] = green * 256;
             color.val[2] = blue * 256;
+	    mycolor=color;
 
             // you should create directory: result_img
             //static int copied_frame_id = -1;
@@ -625,22 +646,31 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
             //cvSaveImage(image_name, copy_img, 0);
             //cvResetImageROI(copy_img);
 
-            cvRectangle(show_img, pt1, pt2, color, width, 8, 0);
+            // cvRectangle(show_img, pt1, pt2, color, width, 8, 0);
             if (ext_output)
                 printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
                     (float)left, (float)top, b.w*show_img->width, b.h*show_img->height);
             else
                 printf("\n");
 
-            cvRectangle(show_img, pt_text_bg1, pt_text_bg2, color, width, 8, 0);
-            cvRectangle(show_img, pt_text_bg1, pt_text_bg2, color, CV_FILLED, 8, 0);    // filled
+            // cvRectangle(show_img, pt_text_bg1, pt_text_bg2, color, width, 8, 0);
+            // cvRectangle(show_img, pt_text_bg1, pt_text_bg2, color, CV_FILLED, 8, 0);    // filled
             CvScalar black_color;
             black_color.val[0] = 0;
             CvFont font;
             cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, font_size, font_size, 0, font_size * 3, 8);
-            cvPutText(show_img, labelstr, pt_text, &font, black_color);
+             // cvPutText(show_img, labelstr, pt_text, &font, black_color);
         }
     }
+    // CvFont font;
+    // CvScalar black_color;
+    // black_color.val[0] = 0;
+    // float const font_size = show_img->height / 1000.F;
+    cvRectangle(show_img, mypt1, mypt2, mycolor, mywidth, 8, 0);
+    cvRectangle(show_img, mypt3, mypt4, mycolor, mylwidth, 8, 0);
+    // cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, font_size, font_size, 0, font_size * 3, 8);
+    // cvPutText(show_img, labelstr, pt_text, &font, black_color);
+    
     if (ext_output) {
         fflush(stdout);
     }
