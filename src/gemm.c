@@ -2216,6 +2216,7 @@ void im2col_cpu_custom_bin(float* data_im,
     int channels, int height, int width,
     int ksize, int stride, int pad, float* data_col, int bit_align)
 {
+<<<<<<< HEAD
     int c;
     const int height_col = (height + 2 * pad - ksize) / stride + 1;
     const int width_col = (width + 2 * pad - ksize) / stride + 1;
@@ -2499,6 +2500,15 @@ void gemm_nn_bin_transposed_32bit_packed(int M, int N, int K, float ALPHA,
                 int32_t count = popcnt_32(xnor_result);  // must be Signed int
 
                 val += (2 * count - 32) * mean_val;
+=======
+    int i,j,k;
+    #pragma omp parallel for
+    for(i = 0; i < M; ++i){
+        for(k = 0; k < K; ++k){
+            register float A_PART = ALPHA*A[i*lda+k];
+            for(j = 0; j < N; ++j){
+                C[i*ldc+j] += A_PART*B[k*ldb+j];
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
             }
             C[i*ldc + j] += val;
         }
@@ -2577,6 +2587,7 @@ void gemm_nt(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
+    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(j = 0; j < N; ++j){
             PUT_IN_REGISTER float sum = 0;
@@ -2594,6 +2605,7 @@ void gemm_tn(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
+    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(k = 0; k < K; ++k){
             PUT_IN_REGISTER float A_PART = ALPHA * A[k * lda + i];
@@ -2610,6 +2622,7 @@ void gemm_tt(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
+    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(j = 0; j < N; ++j){
             PUT_IN_REGISTER float sum = 0;
@@ -2662,8 +2675,13 @@ void gemm_cpu(int TA, int TB, int M, int N, int K, float ALPHA,
 
 #include <math.h>
 
+<<<<<<< HEAD
 void gemm_ongpu(int TA, int TB, int M, int N, int K, float ALPHA,
         float *A_gpu, int lda,
+=======
+void gemm_gpu(int TA, int TB, int M, int N, int K, float ALPHA, 
+        float *A_gpu, int lda, 
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
         float *B_gpu, int ldb,
         float BETA,
         float *C_gpu, int ldc)
@@ -2676,6 +2694,7 @@ void gemm_ongpu(int TA, int TB, int M, int N, int K, float ALPHA,
     CHECK_CUDA(status);
 }
 
+<<<<<<< HEAD
 void gemm_gpu(int TA, int TB, int M, int N, int K, float ALPHA,
         float *A, int lda,
         float *B, int ldb,
@@ -2694,6 +2713,8 @@ void gemm_gpu(int TA, int TB, int M, int N, int K, float ALPHA,
     cuda_free(C_gpu);
 }
 
+=======
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2723,7 +2744,7 @@ void time_gpu_random_matrix(int TA, int TB, int m, int k, int n)
     free(c);
 }
 
-void time_ongpu(int TA, int TB, int m, int k, int n)
+void time_gpu(int TA, int TB, int m, int k, int n)
 {
     int iter = 10;
     float *a = random_matrix(m,k);
@@ -2741,8 +2762,13 @@ void time_ongpu(int TA, int TB, int m, int k, int n)
     int i;
     clock_t start = clock(), end;
     for(i = 0; i<iter; ++i){
+<<<<<<< HEAD
         gemm_ongpu(TA,TB,m,n,k,1,a_cl,lda,b_cl,ldb,1,c_cl,n);
         cudaDeviceSynchronize();
+=======
+        gemm_gpu(TA,TB,m,n,k,1,a_cl,lda,b_cl,ldb,1,c_cl,n);
+        cudaThreadSynchronize();
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     }
     double flop = ((double)m)*n*(2.*k + 2.)*iter;
     double gflop = flop/pow(10., 9);
@@ -2798,6 +2824,7 @@ void test_gpu_accuracy(int TA, int TB, int m, int k, int n)
 int test_gpu_blas()
 {
     /*
+<<<<<<< HEAD
        test_gpu_accuracy(0,0,10,576,75);
 
        test_gpu_accuracy(0,0,17,10,10);
@@ -2830,6 +2857,40 @@ int test_gpu_blas()
     time_ongpu(1,1,2304,256,784);
     time_ongpu(0,0,512,4608,196);
     time_ongpu(1,1,4608,512,196);
+=======
+       test_gpu_accuracy(0,0,10,576,75); 
+
+       test_gpu_accuracy(0,0,17,10,10); 
+       test_gpu_accuracy(1,0,17,10,10); 
+       test_gpu_accuracy(0,1,17,10,10); 
+       test_gpu_accuracy(1,1,17,10,10); 
+
+       test_gpu_accuracy(0,0,1000,10,100); 
+       test_gpu_accuracy(1,0,1000,10,100); 
+       test_gpu_accuracy(0,1,1000,10,100); 
+       test_gpu_accuracy(1,1,1000,10,100); 
+
+       test_gpu_accuracy(0,0,10,10,10); 
+
+       time_gpu(0,0,64,2916,363); 
+       time_gpu(0,0,64,2916,363); 
+       time_gpu(0,0,64,2916,363); 
+       time_gpu(0,0,192,729,1600); 
+       time_gpu(0,0,384,196,1728); 
+       time_gpu(0,0,256,196,3456); 
+       time_gpu(0,0,256,196,2304); 
+       time_gpu(0,0,128,4096,12544); 
+       time_gpu(0,0,128,4096,4096); 
+     */
+    time_gpu(0,0,64,75,12544); 
+    time_gpu(0,0,64,75,12544); 
+    time_gpu(0,0,64,75,12544); 
+    time_gpu(0,0,64,576,12544); 
+    time_gpu(0,0,256,2304,784); 
+    time_gpu(1,1,2304,256,784); 
+    time_gpu(0,0,512,4608,196); 
+    time_gpu(1,1,4608,512,196); 
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
     return 0;
 }

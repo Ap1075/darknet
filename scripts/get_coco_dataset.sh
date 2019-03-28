@@ -8,11 +8,16 @@ mkdir images
 cd images
 
 # Download Images
+<<<<<<< HEAD
 #very slow downloading
 #wget -c https://pjreddie.com/media/files/train2014.zip
 #wget -c https://pjreddie.com/media/files/val2014.zip
 wget -c http://images.cocodataset.org/zips/train2014.zip
 wget -c http://images.cocodataset.org/zips/val2014.zip
+=======
+wget -c https://pjreddie.com/media/files/train2014.zip
+wget -c https://pjreddie.com/media/files/val2014.zip
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 # Unzip
 unzip -q train2014.zip

@@ -11,6 +11,7 @@
 #include "data.h"
 #include "tree.h"
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -90,36 +91,20 @@ typedef struct network_state {
     network net;
 } network_state;
 */
+=======
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 #ifdef GPU
-float train_networks(network *nets, int n, data d, int interval);
-void sync_nets(network *nets, int n, int interval);
-float train_network_datum_gpu(network net, float *x, float *y);
-float *network_predict_gpu(network net, float *input);
-float * get_network_output_gpu_layer(network net, int i);
-float * get_network_delta_gpu_layer(network net, int i);
-float *get_network_output_gpu(network net);
-void forward_network_gpu(network net, network_state state);
-void backward_network_gpu(network net, network_state state);
-void update_network_gpu(network net);
+void pull_network_output(network *net);
 #endif
 
-float get_current_rate(network net);
-int get_current_batch(network net);
-void free_network(network net);
-void compare_networks(network n1, network n2, data d);
+void compare_networks(network *n1, network *n2, data d);
 char *get_layer_string(LAYER_TYPE a);
 
-network make_network(int n);
-void forward_network(network net, network_state state);
-void backward_network(network net, network_state state);
-void update_network(network net);
+network *make_network(int n);
 
-float train_network(network net, data d);
-float train_network_batch(network net, data d, int n);
-float train_network_sgd(network net, data d, int n);
-float train_network_datum(network net, float *x, float *y);
 
+<<<<<<< HEAD
 matrix network_predict_data(network net, data test);
 //LIB_API float *network_predict(network net, float *input);
 //LIB_API float *network_predict_ptr(network *net, float *input);
@@ -162,6 +147,13 @@ int get_network_background(network net);
 //LIB_API void calculate_binary_weights(network net);
 network combine_train_valid_networks(network net_train, network net_map);
 void copy_weights_net(network net_train, network *net_map);
+=======
+float network_accuracy_multi(network *net, data d, int n);
+int get_predicted_class_network(network *net);
+void print_network(network *net);
+int resize_network(network *net, int w, int h);
+void calc_network_cost(network *net);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 #ifdef __cplusplus
 }

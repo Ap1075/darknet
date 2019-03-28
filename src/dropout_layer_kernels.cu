@@ -12,9 +12,9 @@ __global__ void yoloswag420blazeit360noscope(float *input, int size, float *rand
     if(id < size) input[id] = (rand[id] < prob) ? 0 : input[id]*scale;
 }
 
-void forward_dropout_layer_gpu(dropout_layer layer, network_state state)
+void forward_dropout_layer_gpu(dropout_layer layer, network net)
 {
-    if (!state.train) return;
+    if (!net.train) return;
     int size = layer.inputs*layer.batch;
     cuda_random(layer.rand_gpu, size);
     /*
@@ -25,15 +25,25 @@ void forward_dropout_layer_gpu(dropout_layer layer, network_state state)
     cuda_push_array(layer.rand_gpu, layer.rand, size);
     */
 
+<<<<<<< HEAD
     yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK, 0, get_cuda_stream() >>>(state.input, size, layer.rand_gpu, layer.probability, layer.scale);
     CHECK_CUDA(cudaPeekAtLastError());
+=======
+    yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK>>>(net.input_gpu, size, layer.rand_gpu, layer.probability, layer.scale);
+    check_error(cudaPeekAtLastError());
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 }
 
-void backward_dropout_layer_gpu(dropout_layer layer, network_state state)
+void backward_dropout_layer_gpu(dropout_layer layer, network net)
 {
-    if(!state.delta) return;
+    if(!net.delta_gpu) return;
     int size = layer.inputs*layer.batch;
 
+<<<<<<< HEAD
     yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK, 0, get_cuda_stream() >>>(state.delta, size, layer.rand_gpu, layer.probability, layer.scale);
     CHECK_CUDA(cudaPeekAtLastError());
+=======
+    yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK>>>(net.delta_gpu, size, layer.rand_gpu, layer.probability, layer.scale);
+    check_error(cudaPeekAtLastError());
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 }

@@ -16,7 +16,7 @@ float im2col_get_pixel(float* im, int height, int width, int channels,
 
 #ifdef GPU
 
-void im2col_ongpu(float *im,
+void im2col_gpu(float *im,
          int channels, int height, int width,
          int ksize, int stride, int pad,float *data_col);
 

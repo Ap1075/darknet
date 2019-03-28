@@ -2,6 +2,7 @@
 #define DEMO_H
 
 #include "image.h"
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -10,5 +11,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, float hier_thresh, int 
 #ifdef __cplusplus
 }
 #endif
+=======
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 #endif

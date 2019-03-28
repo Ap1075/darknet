@@ -54,8 +54,13 @@ maxpool_layer make_maxpool_layer(int batch, int h, int w, int c, int size, int s
     l.w = w;
     l.c = c;
     l.pad = padding;
+<<<<<<< HEAD
     l.out_w = (w + padding - size) / stride + 1;
     l.out_h = (h + padding - size) / stride + 1;
+=======
+    l.out_w = (w + padding - size)/stride + 1;
+    l.out_h = (h + padding - size)/stride + 1;
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     l.out_c = c;
     l.outputs = l.out_h * l.out_w * l.out_c;
     l.inputs = h*w*c;
@@ -70,7 +75,7 @@ maxpool_layer make_maxpool_layer(int batch, int h, int w, int c, int size, int s
     #ifdef GPU
     l.forward_gpu = forward_maxpool_layer_gpu;
     l.backward_gpu = backward_maxpool_layer_gpu;
-    l.indexes_gpu = cuda_make_int_array(output_size);
+    l.indexes_gpu = cuda_make_int_array(0, output_size);
     l.output_gpu  = cuda_make_array(l.output, output_size);
     l.delta_gpu   = cuda_make_array(l.delta, output_size);
 
@@ -88,8 +93,13 @@ void resize_maxpool_layer(maxpool_layer *l, int w, int h)
     l->w = w;
     l->inputs = h*w*l->c;
 
+<<<<<<< HEAD
     l->out_w = (w + l->pad - l->size) / l->stride + 1;
     l->out_h = (h + l->pad - l->size) / l->stride + 1;
+=======
+    l->out_w = (w + l->pad - l->size)/l->stride + 1;
+    l->out_h = (h + l->pad - l->size)/l->stride + 1;
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     l->outputs = l->out_w * l->out_h * l->c;
     int output_size = l->outputs * l->batch;
 
@@ -97,11 +107,19 @@ void resize_maxpool_layer(maxpool_layer *l, int w, int h)
     l->output = (float*)realloc(l->output, output_size * sizeof(float));
     l->delta = (float*)realloc(l->delta, output_size * sizeof(float));
 
+<<<<<<< HEAD
 #ifdef GPU
     CHECK_CUDA(cudaFree((float *)l->indexes_gpu));
     CHECK_CUDA(cudaFree(l->output_gpu));
     CHECK_CUDA(cudaFree(l->delta_gpu));
     l->indexes_gpu = cuda_make_int_array(output_size);
+=======
+    #ifdef GPU
+    cuda_free((float *)l->indexes_gpu);
+    cuda_free(l->output_gpu);
+    cuda_free(l->delta_gpu);
+    l->indexes_gpu = cuda_make_int_array(0, output_size);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     l->output_gpu  = cuda_make_array(l->output, output_size);
     l->delta_gpu   = cuda_make_array(l->delta,  output_size);
 
@@ -109,7 +127,7 @@ void resize_maxpool_layer(maxpool_layer *l, int w, int h)
 #endif
 }
 
-void forward_maxpool_layer(const maxpool_layer l, network_state state)
+void forward_maxpool_layer(const maxpool_layer l, network net)
 {
     if (!state.train) {
         forward_maxpool_layer_avx(state.input, l.output, l.indexes, l.size, l.w, l.h, l.out_w, l.out_h, l.c, l.pad, l.stride, l.batch);
@@ -117,8 +135,13 @@ void forward_maxpool_layer(const maxpool_layer l, network_state state)
     }
 
     int b,i,j,k,m,n;
+<<<<<<< HEAD
     int w_offset = -l.pad / 2;
     int h_offset = -l.pad / 2;
+=======
+    int w_offset = -l.pad/2;
+    int h_offset = -l.pad/2;
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
     int h = l.out_h;
     int w = l.out_w;
@@ -138,7 +161,7 @@ void forward_maxpool_layer(const maxpool_layer l, network_state state)
                             int index = cur_w + l.w*(cur_h + l.h*(k + b*l.c));
                             int valid = (cur_h >= 0 && cur_h < l.h &&
                                          cur_w >= 0 && cur_w < l.w);
-                            float val = (valid != 0) ? state.input[index] : -FLT_MAX;
+                            float val = (valid != 0) ? net.input[index] : -FLT_MAX;
                             max_i = (val > max) ? index : max_i;
                             max   = (val > max) ? val   : max;
                         }
@@ -151,7 +174,7 @@ void forward_maxpool_layer(const maxpool_layer l, network_state state)
     }
 }
 
-void backward_maxpool_layer(const maxpool_layer l, network_state state)
+void backward_maxpool_layer(const maxpool_layer l, network net)
 {
     int i;
     int h = l.out_h;
@@ -159,6 +182,6 @@ void backward_maxpool_layer(const maxpool_layer l, network_state state)
     int c = l.c;
     for(i = 0; i < h*w*c*l.batch; ++i){
         int index = l.indexes[i];
-        state.delta[index] += l.delta[i];
+        net.delta[index] += l.delta[i];
     }
 }

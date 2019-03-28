@@ -1,16 +1,21 @@
 #ifndef BOX_H
 #define BOX_H
+<<<<<<< HEAD
 
 #include "darknet.h"
 
 //typedef struct{
 //    float x, y, w, h;
 //} box;
+=======
+#include "darknet.h"
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 typedef struct{
     float dx, dy, dw, dh;
 } dbox;
 
+<<<<<<< HEAD
 //typedef struct detection {
 //	box bbox;
 //	int classes;
@@ -38,6 +43,10 @@ void do_nms(box *boxes, float **probs, int total, int classes, float thresh);
 void do_nms_sort_v2(box *boxes, float **probs, int total, int classes, float thresh);
 //LIB_API void do_nms_sort(detection *dets, int total, int classes, float thresh);
 //LIB_API void do_nms_obj(detection *dets, int total, int classes, float thresh);
+=======
+float box_rmse(box a, box b);
+dbox diou(box a, box b);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 box decode_box(box b, box anchor);
 box encode_box(box b, box anchor);
 

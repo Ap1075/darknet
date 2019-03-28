@@ -1,7 +1,12 @@
 # Yolo-v3 and Yolo-v2 for Windows and Linux
 ### (neural network for object detection) - Tensor Cores can be used on [Linux](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux) and [Windows](https://github.com/AlexeyAB/darknet#how-to-compile-on-windows-using-vcpkg)
 
+<<<<<<< HEAD
 [![CircleCI](https://circleci.com/gh/AlexeyAB/darknet.svg?style=svg)](https://circleci.com/gh/AlexeyAB/darknet)
+=======
+# Darknet #
+Darknet is an open source neural network framework written in C and CUDA. It is fast, easy to install, and supports CPU and GPU computation.
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 * [Requirements](#requirements)
 * [Pre-trained models](#pre-trained-models)

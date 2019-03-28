@@ -48,7 +48,11 @@ ACTIVATION get_activation(char *s)
     if (strcmp(s, "loggy")==0) return LOGGY;
     if (strcmp(s, "relu")==0) return RELU;
     if (strcmp(s, "elu")==0) return ELU;
+<<<<<<< HEAD
     if (strcmp(s, "selu") == 0) return SELU;
+=======
+    if (strcmp(s, "selu")==0) return SELU;
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     if (strcmp(s, "relie")==0) return RELIE;
     if (strcmp(s, "plse")==0) return PLSE;
     if (strcmp(s, "hardtan")==0) return HARDTAN;

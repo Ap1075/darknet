@@ -3,7 +3,13 @@
 *.csv
 *.out
 *.png
+<<<<<<< HEAD
 *.so
+=======
+*.jpg
+*.pyc
+old/
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 mnist/
 data/
 caffe/

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef BASE_LAYER_H
 #define BASE_LAYER_H
 
@@ -336,3 +337,6 @@ struct layer{
 }
 #endif
 #endif
+=======
+#include "darknet.h"
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2

@@ -11,7 +11,7 @@ int gpu_index = 0;
 #include "cuda.h"
 #include "utils.h"
 #include "blas.h"
-#include "assert.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -212,9 +212,16 @@ float *cuda_make_array(float *x, size_t n)
     if (status != cudaSuccess) fprintf(stderr, " Try to set subdivisions=64 in your cfg-file. \n");
     CHECK_CUDA(status);
     if(x){
+<<<<<<< HEAD
         //status = cudaMemcpy(x_gpu, x, size, cudaMemcpyHostToDevice);
         status = cudaMemcpyAsync(x_gpu, x, size, cudaMemcpyHostToDevice, get_cuda_stream());
         CHECK_CUDA(status);
+=======
+        status = cudaMemcpy(x_gpu, x, size, cudaMemcpyHostToDevice);
+        check_error(status);
+    } else {
+        fill_gpu(n, 0, x_gpu, 1);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     }
     if(!x_gpu) error("Cuda malloc failed\n");
     return x_gpu;
@@ -247,13 +254,22 @@ float cuda_compare(float *x_gpu, float *x, size_t n, char *s)
     return err;
 }
 
-int *cuda_make_int_array(size_t n)
+int *cuda_make_int_array(int *x, size_t n)
 {
     int *x_gpu;
     size_t size = sizeof(int)*n;
     cudaError_t status = cudaMalloc((void **)&x_gpu, size);
+<<<<<<< HEAD
     if(status != cudaSuccess) fprintf(stderr, " Try to set subdivisions=64 in your cfg-file. \n");
     CHECK_CUDA(status);
+=======
+    check_error(status);
+    if(x){
+        status = cudaMemcpy(x_gpu, x, size, cudaMemcpyHostToDevice);
+        check_error(status);
+    }
+    if(!x_gpu) error("Cuda malloc failed\n");
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     return x_gpu;
 }
 
@@ -304,6 +320,7 @@ void cuda_pull_array_async(float *x_gpu, float *x, size_t n)
     //cudaStreamSynchronize(get_cuda_stream());
 }
 
+<<<<<<< HEAD
 int get_number_of_blocks(int array_size, int block_size)
 {
     return array_size / block_size + ((array_size % block_size > 0) ? 1 : 0);
@@ -323,3 +340,17 @@ int get_gpu_compute_capability(int i)
 #include "darknet.h"
 void cuda_set_device(int n) {}
 #endif // GPU
+=======
+float cuda_mag_array(float *x_gpu, size_t n)
+{
+    float *temp = calloc(n, sizeof(float));
+    cuda_pull_array(x_gpu, temp, n);
+    float m = mag_array(temp, n);
+    free(temp);
+    return m;
+}
+#else
+void cuda_set_device(int n){}
+
+#endif
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2

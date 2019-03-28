@@ -2,6 +2,7 @@
 #define MATRIX_H
 #include "darknet.h"
 
+<<<<<<< HEAD
 //typedef struct matrix{
 //    int rows, cols;
 //    float **vals;
@@ -19,14 +20,12 @@ extern "C" {
 model do_kmeans(matrix data, int k);
 matrix make_matrix(int rows, int cols);
 void free_matrix(matrix m);
+=======
+matrix copy_matrix(matrix m);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 void print_matrix(matrix m);
 
-matrix csv_to_matrix(char *filename);
-void matrix_to_csv(matrix m);
 matrix hold_out_matrix(matrix *m, int n);
-float matrix_topk_accuracy(matrix truth, matrix guess, int k);
-void matrix_add_matrix(matrix from, matrix to);
-void scale_matrix(matrix m, float scale);
 matrix resize_matrix(matrix m, int size);
 
 float *pop_column(matrix *m, int c);

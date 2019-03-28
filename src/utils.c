@@ -9,12 +9,17 @@
 #include <assert.h>
 #include <float.h>
 #include <limits.h>
+<<<<<<< HEAD
 #include "darkunistd.h"
 #ifdef WIN32
 #include "gettimeofday.h"
 #else
 #include <sys/time.h>
 #endif
+=======
+#include <time.h>
+#include <sys/time.h>
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 
 #ifndef USE_CMAKE_LIBS
 #pragma warning(disable: 4996)
@@ -27,6 +32,51 @@ double what_time_is_it_now()
         return 0;
     }
     return (double)time.tv_sec + (double)time.tv_usec * .000001;
+}
+
+
+/*
+// old timing. is it better? who knows!!
+double get_wall_time()
+{
+    struct timeval time;
+    if (gettimeofday(&time,NULL)){
+        return 0;
+    }
+    return (double)time.tv_sec + (double)time.tv_usec * .000001;
+}
+*/
+
+double what_time_is_it_now()
+{
+    struct timeval time;
+    if (gettimeofday(&time,NULL)){
+        return 0;
+    }
+    return (double)time.tv_sec + (double)time.tv_usec * .000001;
+}
+
+int *read_intlist(char *gpu_list, int *ngpus, int d)
+{
+    int *gpus = 0;
+    if(gpu_list){
+        int len = strlen(gpu_list);
+        *ngpus = 1;
+        int i;
+        for(i = 0; i < len; ++i){
+            if (gpu_list[i] == ',') ++*ngpus;
+        }
+        gpus = calloc(*ngpus, sizeof(int));
+        for(i = 0; i < *ngpus; ++i){
+            gpus[i] = atoi(gpu_list);
+            gpu_list = strchr(gpu_list, ',')+1;
+        }
+    } else {
+        gpus = calloc(1, sizeof(float));
+        *gpus = d;
+        *ngpus = 1;
+    }
+    return gpus;
 }
 
 int *read_map(char *filename)
@@ -65,6 +115,22 @@ void shuffle(void *arr, size_t n, size_t size)
         memcpy((char*)arr+(j*size), (char*)arr+(i*size), size);
         memcpy((char*)arr+(i*size), swp,          size);
     }
+}
+
+int *random_index_order(int min, int max)
+{
+    int *inds = calloc(max-min, sizeof(int));
+    int i;
+    for(i = min; i < max; ++i){
+        inds[i] = i;
+    }
+    for(i = min; i < max-1; ++i){
+        int swap = inds[i];
+        int index = i + rand()%(max-i);
+        inds[i] = inds[index];
+        inds[index] = swap;
+    }
+    return inds;
 }
 
 void del_arg(int argc, char **argv, int index)
@@ -280,6 +346,21 @@ void error(const char *s)
     perror(s);
     assert(0);
     exit(EXIT_FAILURE);
+}
+
+unsigned char *read_file(char *filename)
+{
+    FILE *fp = fopen(filename, "rb");
+    size_t size;
+
+    fseek(fp, 0, SEEK_END); 
+    size = ftell(fp);
+    fseek(fp, 0, SEEK_SET); 
+
+    unsigned char *text = calloc(size+1, sizeof(char));
+    fread(text, 1, size, fp);
+    fclose(fp);
+    return text;
 }
 
 void malloc_error()
@@ -644,6 +725,20 @@ int sample_array_custom(float *a, int n)
     return n-1;
 }
 
+int max_int_index(int *a, int n)
+{
+    if(n <= 0) return -1;
+    int i, max_i = 0;
+    int max = a[0];
+    for(i = 1; i < n; ++i){
+        if(a[i] > max){
+            max = a[i];
+            max_i = i;
+        }
+    }
+    return max_i;
+}
+
 int max_index(float *a, int n)
 {
     if(n <= 0) return -1;
@@ -658,6 +753,7 @@ int max_index(float *a, int n)
     return max_i;
 }
 
+<<<<<<< HEAD
 int top_max_index(float *a, int n, int k)
 {
     float *values = (float*)calloc(k, sizeof(float));
@@ -688,6 +784,13 @@ int int_index(int *a, int val, int n)
     int i;
     for (i = 0; i < n; ++i) {
         if (a[i] == val) return i;
+=======
+int int_index(int *a, int val, int n)
+{
+    int i;
+    for(i = 0; i < n; ++i){
+        if(a[i] == val) return i;
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     }
     return -1;
 }
@@ -738,6 +841,7 @@ float rand_normal()
 
 size_t rand_size_t()
 {
+<<<<<<< HEAD
     return  ((size_t)(random_gen()&0xff) << 56) |
             ((size_t)(random_gen()&0xff) << 48) |
             ((size_t)(random_gen()&0xff) << 40) |
@@ -746,6 +850,16 @@ size_t rand_size_t()
             ((size_t)(random_gen()&0xff) << 16) |
             ((size_t)(random_gen()&0xff) << 8) |
             ((size_t)(random_gen()&0xff) << 0);
+=======
+    return  ((size_t)(rand()&0xff) << 56) | 
+        ((size_t)(rand()&0xff) << 48) |
+        ((size_t)(rand()&0xff) << 40) |
+        ((size_t)(rand()&0xff) << 32) |
+        ((size_t)(rand()&0xff) << 24) |
+        ((size_t)(rand()&0xff) << 16) |
+        ((size_t)(rand()&0xff) << 8) |
+        ((size_t)(rand()&0xff) << 0);
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
 }
 
 float rand_uniform(float min, float max)

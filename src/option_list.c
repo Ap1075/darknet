@@ -35,6 +35,7 @@ list *read_data_cfg(char *filename)
 
 metadata get_metadata(char *file)
 {
+<<<<<<< HEAD
     metadata m = { 0 };
     list *options = read_data_cfg(file);
 
@@ -44,11 +45,24 @@ metadata get_metadata(char *file)
         fprintf(stderr, "No names or labels found\n");
     }
     else {
+=======
+    metadata m = {0};
+    list *options = read_data_cfg(file);
+
+    char *name_list = option_find_str(options, "names", 0);
+    if(!name_list) name_list = option_find_str(options, "labels", 0);
+    if(!name_list) {
+        fprintf(stderr, "No names or labels found\n");
+    } else {
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
         m.names = get_labels(name_list);
     }
     m.classes = option_find_int(options, "classes", 2);
     free_list(options);
+<<<<<<< HEAD
     printf("Loaded - names_list: %s, classes = %d \n", name_list, m.classes);
+=======
+>>>>>>> 61c9d02ec461e30d55762ec7669d6a1d3c356fb2
     return m;
 }
 
